@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tab 标签</title>
+    <style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: #F7F7F7;
+		}
+	
+		.tabs {
+			width: 400px;
+			margin: 30px auto;
+			background-color: #FFF;
+			border: 1px solid #C0DCC0;
+			box-sizing: border-box;
+		}
+
+		.tabs nav {
+			height: 40px;
+			text-align: center;
+			line-height: 40px;
+			overflow: hidden;
+			background-color: #C0DCC0;
+			display: flex;
+		}
+
+		nav a {
+			display: block;
+			width: 100px;
+			border-right: 1px solid #FFF;
+			color: #000;
+			text-decoration: none;
+		}
+
+		nav a:last-child {
+			border-right: 0 none;
+		}
+
+		nav a.active {
+			background-color: #9BAF9B;
+		}
+
+		.cont {
+			overflow: hidden;
+			display: none;
+		}
+
+		.cont ol {
+			line-height: 30px;
+		}
+
+    </style>
+</head>
+<body>
+	<div class="tabs">
+		<nav>
+			<!-- 自定义属性格式 data-* -->
+			<a href="javascript:;"  data-id="local">国内新闻</a>
+			<a href="javascript:;" data-id="global" >国际新闻</a>
+			<a href="javascript:;" data-id="sports" >体育新闻</a>
+			<a href="javascript:;" data-id="funny" >娱乐新闻</a>
+		</nav>
+		<section class="cont" id="local">
+			<ol>
+				<li>河感在生矿难，死伤在全10</li>
+				<li>禽流感在感在广1处继续蔓延，温家宝指示</li>
+				<li>南方大旱，农作物减产绝收面积上亩</li>
+				<li>猪流感在广在全国暴发</li>
+				<li>禽流感在全国多处继续蔓延，温家宝指示</li>
+				<li>南方大旱，农作物减产绝收面积上亩</li>
+				<li>猪流感在广东群体性暴发</li>
+			</ol>
+		</section>
+		<section class="cont" id="global">
+			<ol>
+				<li>河南再次发生矿难，死伤人数超过100</li>
+				<li>禽流感次发生蔓延，温家宝指示</li>
+				<li>南方大旱，农作物减产绝收面积上亩</li>
+				<li>猪流感在广减产绝收发</li>
+				<li>禽流感在全国多作物减产绝收面积上亩</li>
+				<li>猪流感在广东群体性暴发</li>
+			</ol>
+		</section>
+		<section class="cont" id="sports">
+			<ol>
+				<li>河南再次发生矿难，死伤人数超过100</li>
+				<li>禽流感在全国多处农作物农延，温家宝指示</li>
+				<li>南方大旱，农作物减产绝收面积上亩</li>
+				<li>猪流感在广东群体性暴发</li>
+				<li>禽流感在全农作物继续蔓延，温家宝指示</li>
+				<li>南方大农作物减产绝收面积上亩</li>
+				<li>猪流感在广东群体性暴发</li>
+			</ol>
+		</section>
+		<section class="cont" id="funny">
+			<ol>
+				<li>河南再次发生矿难，死伤人数超过100</li>
+				<li>禽流感在全国多处农作物农延，温家宝指示</li>
+				<li>南方大旱，农作物减产绝收面积上亩</li>
+				<li>猪流感在广东群体性暴发</li>
+				<li>禽流感在全农作物继续蔓延，温家宝指示</li>
+				<li>南方大农作物减产绝收面积上亩</li>
+				<li>猪流感在广东群体性暴发</li>
+			</ol>
+		</section>
+    </div> 
+	<!--自定义属性名的一个实际运用，一个对象的自定义属性值，是另外一个对象的索引（即可以通过索引去找到这个对象）-->
+    <script>
+		// 目标： 默认显示一个 当前的样式
+		// 点击导航 ，实现切换
+		// a 表示的是当前显示的是第几个
+	    (function taps (a){
+			var navs = document.querySelectorAll('nav a');
+			for(var i=0; i<navs.length; i++){
+				navs[a].classList.add('active');
+				var initId = navs[a].dataset['id'];
+				document.querySelector('#'+initId).style.display = "block";
+				navs[i].onclick = function(){
+					// 排他 之前显示的section隐藏掉，
+					if(document.querySelector('.active')){
+						// 拿到已经显示内容的自定义属性id的值；
+						var sectionId = document.querySelector('.active').dataset['id'];
+						// 获取对应的section标签；
+						document.querySelector('#'+sectionId).style.display ='none';
+
+						document.querySelector('.active').classList.remove('active');
+					}
+					// 突出显示自己；
+					this.classList.add('active');
+					var myId = this.dataset['id'];
+					document.querySelector('#'+myId).style.display = 'block';
+				}
+			}
+		})(0); 
+		// 对于只执行一次的函数，可以利用自执行的匿名函数；
+	</script>
+
+</body>
+</html>
