@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/font-awesome.min.css"/>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        figcaption{
+            text-align: center;
+            font-size:24px;
+            font-family: "Microsoft Yahei";
+        }
+
+        .player{
+            width: 720px;
+            height: 360px;
+            margin:100px auto;
+            /*background-color: #000;*/
+            background: url(images/loading.gif) no-repeat #000 center;
+            background-size:auto 100%;
+            position: relative;
+        }
+
+        video{
+            /*display: none;*/
+            height:100%;
+            display: block;
+            margin:0px auto;
+            /*display: none;*/
+        }
+
+        .controls{
+            position: absolute;
+            width: 700px;
+            height: 40px;
+            background-color: rgba(255,255,0,0.3);
+            left:10px;
+            bottom:10px;
+            border-radius: 5px;
+
+
+        }
+
+        .switch{
+            position: absolute;
+            left:10px;
+            top:10px;
+            width: 20px;
+            height: 20px;
+            font-size:18px;
+            text-align: center;
+            line-height: 20px;
+            color:yellow;
+            cursor: pointer;
+        }
+
+        .progress{
+            width: 432px;
+            height: 10px;
+            background-color: rgba(255,255,255,0.3);
+            position: absolute;
+            left:50px;
+            top:15px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .curr-progress{
+
+            height:100%;
+            background-color: #ffffff;
+            width: 50%;
+        }
+
+        .time{
+            position: absolute;
+            width: 120px;
+            height: 20px;
+
+            left:505px;
+            top:10px;
+            font-size:12px;
+            color:#fff;
+            text-align: center;
+            line-height: 20px;
+        }
+
+        .extend{
+            position: absolute;
+            right:20px;
+            top:10px;
+            width: 20px;
+            height: 20px;
+            font-size:18px;
+            cursor: pointer;
+            text-align: center;
+            line-height: 20px;
+            color:yellow;
+        }
+    </style>
+</head>
+<body>
+    <!-- 新增标签 媒体标签 有语义使用与div一样-->
+    <figure>
+        <figcaption>视频案例</figcaption>
+        <div class="player">
+            <video src="video/fun.mp4"></video>
+            <!-- 控制条-->
+            <div class="controls ">
+                <!-- 开关-->
+                <span class="switch icon-play"></span>
+                <!-- 进度条-->
+                <div class="progress">、
+                    <!--当前进度-->
+                    <div class="curr-progress">
+                    </div>
+                </div>
+                <!-- 时间-->
+                <div class="time">
+                    <span class="curr-time">00:00:00</span>/<span class="total-time">00:00:00</span>
+                </div>
+                <!-- 全屏-->
+                <span class="extend icon-resize-full"></span>
+            </div>
+        </div>
+    </figure>
+
+    <script>
+        // 
+        /*
+        *1、点击按钮 实现播放暂停并且切换图标；
+        *2.算出视频大的总时长并显示出来
+        *3、当视频播放时，进度条同步，当前时间同步；
+        *4.点击按钮实现全屏；
+        */ 
+        //获取需要的标签
+        var video=document.querySelector('video');
+        // 播放按钮
+        var playBtn=document.querySelector('.switch');
+        // 进度条
+        var currProgress=document.querySelector('.curr-progress');
+        // 当前时间
+        var currTime=document.querySelector('.curr-time');
+        // 总时间
+        var totaltime=document.querySelector('.total-time');
+        // 全屏
+        var extend=document.querySelector('.extend');
+
+
+        var Ttime=0;
+//      首先：  通过点击 实现 视频的暂停/播放 改变按钮的样式
+//      然后：　获取视频的总时长，放到totalTime中
+//      然后：  当视频播放的时候， 动态谁知crrTime的值，并且改变进度条的样式
+//      最后：  实现全屏效果
+
+        playBtn.onclick=function(){
+            //1.1 判断视频的状态，如果视频播放就暂停，如果视频暂停，就播放；
+            if(video.paused){
+                video.play();
+                //1.2 切换字体图标，字体图标的原理是为元素增加一个伪元素，为元素会包含一个字体图标； 可以通过控制元素的类名，进而控制字体图标；
+                this.classList.remove('icon-play');
+                this.classList.add('icon-pause');
+            }else{
+                video.pause();
+                this.classList.remove('icon-pause');
+                this.classList.add('icon-play');
+            }
+        }
+        // 2.1 获取视频总时长，视频的加载是一个很复杂的过程，有可能js加载进来，视频还没有加载进来，如果是这种情况，时间是无法获取到的，所以一定是等到视频加载完成，才能获取这个总的时间；利用时间canplay,当视频能播放的时候，就是视频已经加载完成了；
+        video.oncanplay=function(){
+
+            //2.2  获取视频的总时长 duration的单位是s;
+            Ttime=video.duration;
+//             转换成十分秒的格式
+            var h=Math.floor(Ttime/3600);
+
+            var m=Math.floor(Ttime%3600/60);
+
+            var s=Math.floor(Ttime%60);
+//            将数据转化为03 : 05 : 10的格式
+            h=h>10?h:'0'+h;
+            //如果m大于10就返回m本身，如果m<10就返回03的形式；
+            m=m>10?m:'0'+m;
+            s=s>10?s:'0'+s;
+
+            totaltime.innerHTML=h+':'+m+':'+s;
+        }
+//      3.当视频播放的时候，进度条同步，当前时间也同步；利用事件ontimeupdate当视频的当前播放时间更新的时候，就是视频正在播放；视频时间每更新一次就会触发一次事件；
+        video.ontimeupdate=function(){
+            //获取视频当前播放时间；
+            var Ctime=video.currentTime;
+
+            //转换成十分秒的格式
+            var h=Math.floor(Ctime/3600);
+
+            var m=Math.floor(Ctime%3600/60);
+
+            var s=Math.floor(Ctime%60);
+
+            h=h>10?h:'0'+h;
+            m=m>10?m:'0'+m;
+            s=s>10?s:'0'+s;
+
+            currTime.innerHTML=h+':'+m+':'+s;
+        // 动态改变进度条 实际改变进度条的宽度百分比；
+            var value=Ctime/Ttime;
+
+            currProgress.style.width=value*100+"%";
+        }
+    //全屏
+        extend.onclick=function(){
+            video.webkitRequestFullScreen();
+        }
+    </script>
+</body>
+</html>
